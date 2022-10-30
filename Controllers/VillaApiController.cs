@@ -40,9 +40,9 @@ namespace MagicVillaApi.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<VillaDto> CreateVilla([FromBody]VillaDto villaDto)
         {
-            if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
-            };
+            //if (!ModelState.IsValid) {
+            //    return BadRequest(ModelState);
+            //};
             if(villaDto == null) return BadRequest();
             if(villaDto.Id > 0) return StatusCode(StatusCodes.Status500InternalServerError);
 
@@ -50,5 +50,21 @@ namespace MagicVillaApi.Controllers
             VillaStore.villaList.Add(villaDto);
             return CreatedAtRoute("GetVilla", new { id = villaDto.Id}, villaDto);
         }
+
+        [HttpDelete("{id:int}", Name = "DeleteVilla")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult DeleteVilla(int id) 
+        { 
+            if(id== 0) return BadRequest();
+            var villa = VillaStore.villaList.FirstOrDefault(it => it.Id == id);
+            if (villa == null) return NotFound();
+
+            VillaStore.villaList.Remove(villa); 
+
+            return NoContent();
+        }
+
     }
 }
