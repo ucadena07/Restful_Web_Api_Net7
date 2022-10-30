@@ -34,5 +34,19 @@ namespace MagicVillaApi.Controllers
 
             return Ok(villa);    
         }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<VillaDto> CreateVilla([FromBody]VillaDto villaDto)
+        {
+            if(villaDto == null) return BadRequest();
+            if(villaDto.Id > 0) return StatusCode(StatusCodes.Status500InternalServerError);
+
+            villaDto.Id = VillaStore.villaList.OrderByDescending(it => it.Id).FirstOrDefault().Id + 1;  
+            VillaStore.villaList.Add(villaDto);
+            return Ok(villaDto);
+        }
     }
 }
