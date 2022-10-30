@@ -19,6 +19,9 @@ namespace MagicVillaApi.Controllers
 
         [HttpGet]
         [Route("GetVillaById/{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<VillaDto> GetVillaById(int id) 
         { 
             if(id == 0)
