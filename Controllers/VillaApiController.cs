@@ -17,12 +17,11 @@ namespace MagicVillaApi.Controllers
             return Ok(VillaStore.villaList);
         }
 
-        [HttpGet]
-        [Route("GetVillaById/{id:int}")]
+        [HttpGet("{id:int}", Name = "GetVilla")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<VillaDto> GetVillaById(int id) 
+        public ActionResult<VillaDto> GetVilla(int id) 
         { 
             if(id == 0)
                 return BadRequest();
@@ -36,7 +35,7 @@ namespace MagicVillaApi.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<VillaDto> CreateVilla([FromBody]VillaDto villaDto)
@@ -46,7 +45,7 @@ namespace MagicVillaApi.Controllers
 
             villaDto.Id = VillaStore.villaList.OrderByDescending(it => it.Id).FirstOrDefault().Id + 1;  
             VillaStore.villaList.Add(villaDto);
-            return Ok(villaDto);
+            return CreatedAtRoute("GetVilla", new { id = villaDto.Id}, villaDto);
         }
     }
 }
