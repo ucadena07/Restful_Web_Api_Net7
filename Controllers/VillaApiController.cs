@@ -1,4 +1,5 @@
 ﻿using MagicVillaApi.Data;
+using MagicVillaApi.Logging;
 using MagicVillaApi.Models;
 using MagicVillaApi.Models.Dtos;
 using Microsoft.AspNetCore.Http;
@@ -11,16 +12,18 @@ namespace MagicVillaApi.Controllers
     [ApiController]
     public class VillaApiController : ControllerBase
     {
-        private readonly ILogger<VillaApiController> _logger;
-        public VillaApiController(ILogger<VillaApiController> logger)
+        //private readonly ILogger<VillaApiController> _logger;
+        private readonly ILogging _logger;
+        public VillaApiController(ILogging logger)
         {
-            _logger = logger;
+          _logger = logger;
         }
 
         [HttpGet]
         [Route("GetVillas")]
         public ActionResult<IEnumerable<VillaDto>> GetVillas()
         {
+            _logger.Log("Getting all villas", "");
             return Ok(VillaStore.villaList);
         }
 
@@ -31,7 +34,10 @@ namespace MagicVillaApi.Controllers
         public ActionResult<VillaDto> GetVilla(int id) 
         { 
             if(id == 0)
+            {
+                _logger.Log($"Get villa error with id {id}", "error");
                 return BadRequest();
+            }
 
             var villa = VillaStore.villaList.FirstOrDefault(it => it.Id == id);
 
