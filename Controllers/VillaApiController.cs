@@ -53,7 +53,7 @@ namespace MagicVillaApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<VillaDto> CreateVilla([FromBody] VillaDto villaDto)
+        public ActionResult<VillaDto> CreateVilla([FromBody] VillaCreateDto villaDto)
         {
             //if (!ModelState.IsValid) {
             //    return BadRequest(ModelState);
@@ -65,13 +65,12 @@ namespace MagicVillaApi.Controllers
             }
 
             if (villaDto == null) return BadRequest();
-            if (villaDto.Id > 0) return StatusCode(StatusCodes.Status500InternalServerError);
+
 
             Villa model = new Villa()
             {
                 Amenity = villaDto.Amenity,
                 Details = villaDto.Details,
-                Id = villaDto.Id,
                 ImageUrl = villaDto.ImageUrl,
                 Name = villaDto.Name,
                 Occupancy = villaDto.Occupancy,
@@ -82,7 +81,7 @@ namespace MagicVillaApi.Controllers
             var results = _db.Villas.Add(model);
             _db.SaveChanges();
 
-            return CreatedAtRoute("GetVilla", new { id = results.Entity.Id }, villaDto);
+            return CreatedAtRoute("GetVilla", new { id = model.Id}, model);
         }
 
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
@@ -105,7 +104,7 @@ namespace MagicVillaApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateVilla(int id, [FromBody] VillaDto villaDto)
+        public IActionResult UpdateVilla(int id, [FromBody] VillaUpdateDto villaDto)
         {
             if (villaDto == null || id != villaDto.Id) return BadRequest();
             var villa = _db.Villas.AsNoTracking().FirstOrDefault(it => it.Id == id);
@@ -133,7 +132,7 @@ namespace MagicVillaApi.Controllers
         [HttpPatch("{id:int}", Name = "UpdatePartialVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdatePartialVilla(int id, [FromBody] JsonPatchDocument<VillaDto> patchDto)
+        public IActionResult UpdatePartialVilla(int id, [FromBody] JsonPatchDocument<VillaUpdateDto> patchDto)
         {
             if (patchDto == null || id == 0) return BadRequest();
             var villa = _db.Villas.AsNoTracking().FirstOrDefault(it => it.Id == id);
