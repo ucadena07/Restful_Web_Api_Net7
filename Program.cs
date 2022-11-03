@@ -5,6 +5,8 @@ using MagicVillaApi.Logging;
 using MagicVillaApi.Mapping;
 using MagicVillaApi.Repository;
 using MagicVillaApi.Repository.IRepository;
+using MagicVillaApi.Respositories;
+using MagicVillaApi.Respositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
