@@ -3,6 +3,8 @@
 using MagicVillaApi.Data;
 using MagicVillaApi.Logging;
 using MagicVillaApi.Mapping;
+using MagicVillaApi.Repositories;
+using MagicVillaApi.Repositories.IRepositories;
 using MagicVillaApi.Repository;
 using MagicVillaApi.Repository.IRepository;
 using MagicVillaApi.Respositories;
@@ -18,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IVillaRepository, VillaRepository>();
+builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
 //builder.Services.AddScoped<ILogging,LogginV2>();
 //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/villaLogs.txt",rollingInterval:RollingInterval.Day).CreateLogger();
 
