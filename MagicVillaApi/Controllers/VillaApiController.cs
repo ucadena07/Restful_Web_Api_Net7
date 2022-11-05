@@ -29,7 +29,6 @@ namespace MagicVillaApi.Controllers
         }
 
         [HttpGet]
-        [Route("GetVillas")]
         public async Task<ActionResult<APIResponse>> GetVillas()
         {
             try
