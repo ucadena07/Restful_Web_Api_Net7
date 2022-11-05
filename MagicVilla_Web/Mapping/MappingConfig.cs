@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using MagicVillaApi.Models;
-using MagicVillaApi.Models.Dtos;
+using MagicVilla_Web.Models;
+using MagicVilla_Web.Models.Dtos;
 
-namespace MagicVillaApi.Mapping
+namespace MagicVilla_Web.Mapping
 {
     public class MappingConfig : Profile
     {
