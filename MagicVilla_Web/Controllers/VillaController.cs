@@ -50,14 +50,14 @@ namespace MagicVilla_Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> UpdateVila(int villaId)
+        public async Task<IActionResult> UpdateVilla(int villaId)
         {
 
 
             var response = await _villaService.GetAsync<APIResponse>(villaId);
             if (response != null && response.IsSuccess)
             {
-                var model = JsonConvert.DeserializeObject<VillaDto>(Convert.ToString(response.Result));
+                var model = JsonConvert.DeserializeObject<Villa>(Convert.ToString(response.Result));
                 return View(_mapper.Map<VillaUpdateDto>(model));
             }
 
@@ -65,7 +65,7 @@ namespace MagicVilla_Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateVila(VillaUpdateDto model)
+        public async Task<IActionResult> UpdateVilla(VillaUpdateDto model)
         {
             if (ModelState.IsValid)
             {
