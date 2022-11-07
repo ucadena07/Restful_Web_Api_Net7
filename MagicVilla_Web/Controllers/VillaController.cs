@@ -31,7 +31,7 @@ namespace MagicVilla_Web.Controllers
 			return View(list);
 		}
 
-		public async Task<IActionResult> CreateVilla()
+		public  IActionResult CreateVilla()
 		{
 			return View();
 		}
