@@ -6,6 +6,7 @@ using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace MagicVilla_Web.Controllers
 {
@@ -65,6 +66,20 @@ namespace MagicVilla_Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
+
+            List<VillaDto> list = new();
+            var resp = await _villaService.GetAllAsync<APIResponse>();
+            if (resp != null && resp.IsSuccess)
+            {
+                list = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(resp.Result));
+            }
+
+            model.VillaList = list.Select(it => new SelectListItem
+            {
+                Text = it.Name,
+                Value = it.Id.ToString(),
+            });
+
             return View(model);
         }
     }
