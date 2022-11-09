@@ -40,7 +40,11 @@ namespace MagicVillaApi.Repositories
 
             if(user == null)
             {
-                return null;
+                return new LoginResponseDTO()
+                {
+                    Token = "",
+                    User = null
+                };
             }
 
             //generate Jwt token
