@@ -10,11 +10,13 @@ namespace MagicVillaApi.Repositories
     {
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
-        public UserRepository(ApplicationDbContext db, IMapper mapper)
+        private string secretKey;
+  
+        public UserRepository(ApplicationDbContext db, IMapper mapper, IConfiguration config)
         {
             _db = db;
             _mapper = mapper;
-
+            secretKey = config.GetValue<string>("ApiSettings:JwtSecretKey");
         }
         public bool IsUniqueUser(string username)
         {
@@ -28,7 +30,17 @@ namespace MagicVillaApi.Repositories
 
         public Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
-            throw new NotImplementedException();
+            var user = _db.LocalUsers.FirstOrDefault(it => it.UserName.ToLower() == loginRequestDTO.UserName.ToLower()
+            && it.Password == loginRequestDTO.Password);
+
+            if(user == null)
+            {
+                return null;
+            }
+
+            //generate Jwt token
+
+
         }
 
         public async Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDto)
