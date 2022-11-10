@@ -9,6 +9,7 @@ using MagicVillaApi.Repository;
 using MagicVillaApi.Repository.IRepository;
 using MagicVillaApi.Respositories;
 using MagicVillaApi.Respositories.IRepositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 //builder.Host.UseSerilog();  
 
+builder.Services.AddAuthentication(it =>
+{
+    it.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
+});
+
+
 builder.Services.AddControllers().AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -42,6 +50,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
