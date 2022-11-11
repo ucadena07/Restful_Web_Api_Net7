@@ -2,6 +2,8 @@
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dtos;
 using MagicVilla_Web.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -31,13 +33,15 @@ namespace MagicVilla_Web.Controllers
 			return View(list);
 		}
 
-		public  IActionResult CreateVilla()
+        [Authorize(Roles = "Admin")]
+        public  IActionResult CreateVilla()
 		{
 			return View();
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateVilla(VillaCreateDto model)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateVilla(VillaCreateDto model)
 		{
 			if (ModelState.IsValid)
 			{
@@ -48,11 +52,12 @@ namespace MagicVilla_Web.Controllers
 					return RedirectToAction(nameof(Index));
 				}
 			}
-            TempData["error"] = "Error encountered";
-            return View(model);
+			TempData["error"] = "Error encountered";
+			return View(model);
 		}
 
-		public async Task<IActionResult> UpdateVilla(int villaId)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateVilla(int villaId)
 		{
 
 
@@ -67,23 +72,24 @@ namespace MagicVilla_Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> UpdateVilla(VillaUpdateDto model)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateVilla(VillaUpdateDto model)
 		{
 			if (ModelState.IsValid)
 			{
 				var response = await _villaService.UpdateAsync<APIResponse>(model);
 				if (response != null && response.IsSuccess)
 				{
-                    TempData["success"] = "Villa updated succcessfully";
-                    return RedirectToAction(nameof(Index));
+					TempData["success"] = "Villa updated succcessfully";
+					return RedirectToAction(nameof(Index));
 				}
 			}
-            TempData["error"] = "Error encountered";
-            return View(model);
+			TempData["error"] = "Error encountered";
+			return View(model);
 		}
 
-
-		public async Task<IActionResult> DeleteVilla(int villaId)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteVilla(int villaId)
 		{
 
 
@@ -98,18 +104,19 @@ namespace MagicVilla_Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> DeleteVilla(VillaDto model)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteVilla(VillaDto model)
 		{
 		
 				var response = await _villaService.DeleteAsync<APIResponse>(model.Id);
 				if (response != null && response.IsSuccess)
 				{
-                TempData["success"] = "Villa deleted succcessfully";
-                return RedirectToAction(nameof(Index));
+				TempData["success"] = "Villa deleted succcessfully";
+				return RedirectToAction(nameof(Index));
 				}
 
-            TempData["error"] = "Error encountered";
-            return View(model);
+			TempData["error"] = "Error encountered";
+			return View(model);
 		}
 
 

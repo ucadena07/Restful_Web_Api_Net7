@@ -8,7 +8,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Reflection;
-
+using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MagicVilla_Web.Controllers
 {
@@ -37,6 +38,7 @@ namespace MagicVilla_Web.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateVillaNumber()
         {
             VillaNumberCreateVM vm = new();
@@ -58,6 +60,7 @@ namespace MagicVilla_Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateVillaNumber(VillaNumberCreateVM model)
         {
             if (ModelState.IsValid)
@@ -92,6 +95,7 @@ namespace MagicVilla_Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateVillaNumber(int VillaNo)
         {
 
@@ -123,6 +127,7 @@ namespace MagicVilla_Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateVillaNumber(VillaNumberUpdateVM model)
         {
             if (ModelState.IsValid)
@@ -157,6 +162,7 @@ namespace MagicVilla_Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVillaNumber(int VillaNo)
         {
 
@@ -189,6 +195,7 @@ namespace MagicVilla_Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVillaNumber(VillaNumberDeleteVM model)
         {
 
