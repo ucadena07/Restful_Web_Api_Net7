@@ -3,6 +3,7 @@ using MagicVillaApi.Data;
 using MagicVillaApi.Models;
 using MagicVillaApi.Models.Dtos;
 using MagicVillaApi.Repositories.IRepositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,18 +15,21 @@ namespace MagicVillaApi.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _db;
+        private readonly UserManager<ApplicationUser> _userManager; 
+
         private readonly IMapper _mapper;
         private string secretKey;
   
-        public UserRepository(ApplicationDbContext db, IMapper mapper, IConfiguration config)
+        public UserRepository(ApplicationDbContext db, IMapper mapper, IConfiguration config, UserManager<ApplicationUser> userManagaer)
         {
             _db = db;
             _mapper = mapper;
             secretKey = config.GetValue<string>("ApiSettings:JwtSecretKey");
+            _userManager = userManagaer;
         }
         public bool IsUniqueUser(string username)
         {
-            var user = _db.LocalUsers.FirstOrDefault(it => it.UserName == username);
+            var user = _db.ApplicationUsers.FirstOrDefault(it => it.UserName == username);
             if(user == null)
             {
                 return true;
@@ -35,10 +39,11 @@ namespace MagicVillaApi.Repositories
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
-            var user = _db.LocalUsers.FirstOrDefault(it => it.UserName.ToLower() == loginRequestDTO.UserName.ToLower()
-            && it.Password == loginRequestDTO.Password);
+            var user = _db.ApplicationUsers.FirstOrDefault(it => it.UserName.ToLower() == loginRequestDTO.UserName.ToLower());
 
-            if(user == null)
+            bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
+
+            if(user is null || isValid is false)
             {
                 return new LoginResponseDTO()
                 {
@@ -50,13 +55,15 @@ namespace MagicVillaApi.Repositories
             //generate Jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(secretKey);
+            var roles = await _userManager.GetRolesAsync(user);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Role, roles.FirstOrDefault()),
+    
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -66,7 +73,8 @@ namespace MagicVillaApi.Repositories
             LoginResponseDTO response = new LoginResponseDTO
             {
                 Token = tokenHandler.WriteToken(token),
-                User = user,
+                User = _mapper.Map<UserDTO>(user),
+                Role = roles.FirstOrDefault()
 
             };
 
