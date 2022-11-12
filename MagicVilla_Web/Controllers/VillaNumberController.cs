@@ -40,7 +40,7 @@ namespace MagicVilla_Web.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, admin")]
         public async Task<IActionResult> CreateVillaNumber()
         {
             VillaNumberCreateVM vm = new();

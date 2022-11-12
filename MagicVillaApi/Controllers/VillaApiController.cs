@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace MagicVillaApi.Controllers
@@ -30,11 +31,20 @@ namespace MagicVillaApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<APIResponse>> GetVillas()
+        [ResponseCache(CacheProfileName = "Default30")]
+        public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "FilterOccupancy")]int occupancy, int pageSize = 3, int pageNumber = 1)
         {
             try
             {
-                var villas = await _villaRepository.GetAll();
+                var villas = await _villaRepository.GetAll(pageSize:pageSize,pageNumber:pageNumber);
+
+                if (occupancy > 0)
+                    villas = villas.Where(it => it.Occupancy == occupancy).ToList();
+
+
+                var pagination = new Pagination { PageNumber= pageNumber, PageSize = pageSize };
+
+                Response.Headers.Add("X-pagination", JsonConvert.SerializeObject(pagination));
                 _response.Result = _mapper.Map<List<VillaDto>>(villas);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
