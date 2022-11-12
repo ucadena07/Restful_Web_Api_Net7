@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Data;
 using Microsoft.AspNetCore.Authorization;
+using MagicVilla_Utility;
 
 namespace MagicVilla_Web.Controllers
 {
@@ -26,9 +27,10 @@ namespace MagicVilla_Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            var token = HttpContext.Session.GetString(SD.SessionToken);
             List<VillaNumberDTO> list = new();
 
-            var response = await _villaNumberService.GetAllAsync<APIResponse>();
+            var response = await _villaNumberService.GetAllAsync<APIResponse>(token);
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaNumberDTO>>(Convert.ToString(response.Result));
@@ -43,8 +45,8 @@ namespace MagicVilla_Web.Controllers
         {
             VillaNumberCreateVM vm = new();
             List<VillaDto> list = new();
-
-            var response = await _villaService.GetAllAsync<APIResponse>();
+            var token = HttpContext.Session.GetString(SD.SessionToken);
+            var response = await _villaService.GetAllAsync<APIResponse>(token);
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(response.Result));
@@ -63,9 +65,11 @@ namespace MagicVilla_Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateVillaNumber(VillaNumberCreateVM model)
         {
+            var token = HttpContext.Session.GetString(SD.SessionToken);
             if (ModelState.IsValid)
             {
-                var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber);
+           
+                var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber,token);
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(Index));
@@ -80,7 +84,7 @@ namespace MagicVilla_Web.Controllers
             }
 
             List<VillaDto> list = new();
-            var resp = await _villaService.GetAllAsync<APIResponse>();
+            var resp = await _villaService.GetAllAsync<APIResponse>(token);
             if (resp != null && resp.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(resp.Result));
@@ -100,7 +104,8 @@ namespace MagicVilla_Web.Controllers
         {
 
             VillaNumberUpdateVM vm = new();
-            var response = await _villaNumberService.GetAsync<APIResponse>(VillaNo);
+            var token = HttpContext.Session.GetString(SD.SessionToken);
+            var response = await _villaNumberService.GetAsync<APIResponse>(VillaNo,token);
             if (response != null && response.IsSuccess)
             {
                 var model = JsonConvert.DeserializeObject<VillaNumber>(Convert.ToString(response.Result));
@@ -108,7 +113,7 @@ namespace MagicVilla_Web.Controllers
                
             }
             List<VillaDto> list = new();
-            var resp = await _villaService.GetAllAsync<APIResponse>();
+            var resp = await _villaService.GetAllAsync<APIResponse>(token);
             if (resp != null && resp.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(resp.Result));
@@ -130,9 +135,10 @@ namespace MagicVilla_Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateVillaNumber(VillaNumberUpdateVM model)
         {
+            var token = HttpContext.Session.GetString(SD.SessionToken);
             if (ModelState.IsValid)
             {
-                var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumber);
+                var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumber, token);
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(Index));
@@ -147,7 +153,7 @@ namespace MagicVilla_Web.Controllers
             }
 
             List<VillaDto> list = new();
-            var resp = await _villaService.GetAllAsync<APIResponse>();
+            var resp = await _villaService.GetAllAsync<APIResponse>(token);
             if (resp != null && resp.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(resp.Result));
@@ -166,9 +172,9 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> DeleteVillaNumber(int VillaNo)
         {
 
-
+            var token = HttpContext.Session.GetString(SD.SessionToken);
             VillaNumberDeleteVM vm = new();
-            var response = await _villaNumberService.GetAsync<APIResponse>(VillaNo);
+            var response = await _villaNumberService.GetAsync<APIResponse>(VillaNo, token);
             if (response != null && response.IsSuccess)
             {
                 var model = JsonConvert.DeserializeObject<VillaNumber>(Convert.ToString(response.Result));
@@ -176,7 +182,7 @@ namespace MagicVilla_Web.Controllers
 
             }
             List<VillaDto> list = new();
-            var resp = await _villaService.GetAllAsync<APIResponse>();
+            var resp = await _villaService.GetAllAsync<APIResponse>(token);
             if (resp != null && resp.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(resp.Result));
@@ -198,8 +204,8 @@ namespace MagicVilla_Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVillaNumber(VillaNumberDeleteVM model)
         {
-
-            var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo);
+            var token = HttpContext.Session.GetString(SD.SessionToken);
+            var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo, token);
             if (response != null && response.IsSuccess)
             {
                 return RedirectToAction(nameof(Index));
