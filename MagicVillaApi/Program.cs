@@ -3,6 +3,7 @@
 using MagicVillaApi.Data;
 using MagicVillaApi.Logging;
 using MagicVillaApi.Mapping;
+using MagicVillaApi.Models;
 using MagicVillaApi.Repositories;
 using MagicVillaApi.Repositories.IRepositories;
 using MagicVillaApi.Repository;
@@ -10,13 +11,18 @@ using MagicVillaApi.Repository.IRepository;
 using MagicVillaApi.Respositories;
 using MagicVillaApi.Respositories.IRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var key = builder.Configuration.GetValue<string>("ApiSettings:JwtSecretKey");
+
+//Add Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
