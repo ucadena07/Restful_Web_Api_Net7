@@ -10,9 +10,9 @@ using System.Net;
 
 namespace MagicVillaApi.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/VillaNumberApi")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion("1.0",Deprecated = true)]
 
     public class VillaNumberApiController : ControllerBase
     {
@@ -52,7 +52,17 @@ namespace MagicVillaApi.Controllers
 
         }
 
- 
+
+
+
+        [HttpGet("GetString")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public List<string> Get()
+        {
+            return new List<string>() { "string1", "string2" };
+
+
+        }
 
         [HttpGet("{id:int}", Name = "GetVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
