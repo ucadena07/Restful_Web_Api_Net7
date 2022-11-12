@@ -55,7 +55,7 @@ namespace MagicVillaApi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [MapToApiVersion("2.0")]
-        public List<string> Get()
+        public List<string> GetVillaNumbersV2()
         {
             return new List<string>() { "value1", "value2" };
            
