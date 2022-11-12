@@ -30,7 +30,7 @@ namespace MagicVillaApi.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ResponseCache(Duration = 30)]
+        [ResponseCache(CacheProfileName = "Default30")]
   
         public async Task<ActionResult<APIResponse>> GetVillaNumbers()
         {
