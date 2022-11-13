@@ -15,17 +15,19 @@ namespace MagicVillaApi.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _db;
-        private readonly UserManager<ApplicationUser> _userManager; 
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         private readonly IMapper _mapper;
         private string secretKey;
   
-        public UserRepository(ApplicationDbContext db, IMapper mapper, IConfiguration config, UserManager<ApplicationUser> userManagaer)
+        public UserRepository(ApplicationDbContext db, IMapper mapper, IConfiguration config, UserManager<ApplicationUser> userManagaer, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
             _mapper = mapper;
             secretKey = config.GetValue<string>("ApiSettings:JwtSecretKey");
             _userManager = userManagaer;
+            _roleManager = roleManager;
         }
         public bool IsUniqueUser(string username)
         {
@@ -97,6 +99,11 @@ namespace MagicVillaApi.Repositories
                 var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
                 if(result.Succeeded)
                 {
+                    if (!_roleManager.RoleExistsAsync("admin").GetAwaiter().GetResult())
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("admin"));
+                        await _roleManager.CreateAsync(new IdentityRole("customer"));
+                    }
                     await _userManager.AddToRoleAsync(user, "admin");
                     var userToReturn = _db.ApplicationUsers.FirstOrDefault(it => it.UserName == registrationRequestDto.UserName);
                     return _mapper.Map<UserDTO>(userToReturn);  
