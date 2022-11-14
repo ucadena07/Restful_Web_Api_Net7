@@ -1,6 +1,8 @@
 //using Serilog;
 
 using MagicVillaApi.Data;
+using MagicVillaApi.Helpers;
+using MagicVillaApi.Helpers.Interfaces;
 using MagicVillaApi.Logging;
 using MagicVillaApi.Mapping;
 using MagicVillaApi.Models;
@@ -33,6 +35,7 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IVillaRepository, VillaRepository>();
 builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 //builder.Services.AddScoped<ILogging,LogginV2>();
 //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/villaLogs.txt",rollingInterval:RollingInterval.Day).CreateLogger();
 

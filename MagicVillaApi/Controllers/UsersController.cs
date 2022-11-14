@@ -1,4 +1,5 @@
-﻿using MagicVillaApi.Models;
+﻿using MagicVillaApi.Helpers.Interfaces;
+using MagicVillaApi.Models;
 using MagicVillaApi.Models.Dtos;
 using MagicVillaApi.Repositories.IRepositories;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +15,14 @@ namespace MagicVillaApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordService _passwordService;
         private APIResponse _response;
 
-        public UsersController(IUserRepository userRepository)
+        public UsersController(IUserRepository userRepository, IPasswordService passwordService)
         {
             _userRepository = userRepository;
             _response = new();
+            _passwordService = passwordService;
         }
 
         [HttpPost("login")]
@@ -63,5 +66,44 @@ namespace MagicVillaApi.Controllers
             _response.IsSuccess = true;
             return Ok(_response);
         }
+
+        //[HttpPost("registerv2")]
+        //public async Task<IActionResult> RegisterV2([FromBody] RegistrationRequestDTO model)
+        //{
+        //    var pass = _passwordService.CreatePasswordHash(model.Password);
+
+        //    UserV2 user = new()
+        //    {
+        //        Username = model.UserName,
+        //        PasswordHash= pass.passwordHash,
+        //        PasswordSalt = pass.passwordSalt
+        //    };
+
+        //    _response.Result = user;
+        //    _response.StatusCode = HttpStatusCode.OK;
+        //    _response.IsSuccess = true;
+        //    return Ok(_response);
+        //}
+
+        //[HttpPost("loginv2")]
+        //public async Task<IActionResult> LoginV2([FromBody] LoginRequestDTO model)
+        //{
+        //    var pass = _passwordService.CreatePasswordHash(model.Password);
+
+        //    UserV2 user = new()
+        //    {
+        //        Username = model.UserName,
+        //        PasswordHash = pass.passwordHash,
+        //        PasswordSalt = pass.passwordSalt
+        //    };
+
+        //    var checkPassword = _passwordService.VerifyPasswordHash(model.Password, user.PasswordHash, user.PasswordSalt);
+
+
+        //    _response.StatusCode = HttpStatusCode.OK;
+        //    _response.IsSuccess = true;
+        //    //_response.Result = loginResponse;
+        //    return Ok(_response);
+        //}
     }
 }
