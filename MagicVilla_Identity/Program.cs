@@ -1,5 +1,6 @@
 using MagicVilla_Identity;
 using MagicVilla_Identity.Data;
+using MagicVilla_Identity.DBInitializer;
 using MagicVilla_Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+//Seed Db interface
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 //Add Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -49,6 +53,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+//Call method to seed db
+SeedDatabase();
+
 app.UseRouting();
 
 //use identity server instead of app.useauthentication
@@ -64,3 +71,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+void SeedDatabase()
+{
+    using(var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    }
+}
