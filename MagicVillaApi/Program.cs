@@ -62,6 +62,7 @@ builder.Services.AddAuthentication(it =>
 {
     it.RequireHttpsMetadata = false;
     it.SaveToken = true;
+    it.Authority = "https://localhost:7003";
     it.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = false,
@@ -70,6 +71,15 @@ builder.Services.AddAuthentication(it =>
         ValidateIssuerSigningKey = true
     };
 });
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("ApiScope", policy =>
+//    {
+//        policy.RequireAuthenticatedUser();
+//        policy.RequireClaim("scope", "mango");
+//    });
+//});
 
 
 builder.Services.AddControllers(
