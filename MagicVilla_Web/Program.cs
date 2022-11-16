@@ -27,15 +27,15 @@ builder.Services.AddAuthentication(options => {
     options.DefaultChallengeScheme = "oidc";
     
     })
-    
-    //.AddCookie(options =>
-    //{
-    //    options.Cookie.HttpOnly = true;
-    //    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-    //    options.SlidingExpiration = true;
-    //    options.LoginPath = "/Auth/Login";
-    //    options.AccessDeniedPath = "/Auth/AccessDenied";
-    //})
+
+    .AddCookie(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
+        //options.LoginPath = "/Auth/Login";
+        //options.AccessDeniedPath = "/Auth/AccessDenied";
+    })
     .AddOpenIdConnect("oidc", options =>
     {
         options.Authority = builder.Configuration["ServicesUrls:IdentityAPI"];
