@@ -3,6 +3,7 @@ using MagicVilla_Utility;
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dtos;
 using MagicVilla_Web.Services.IServices;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace MagicVilla_Web.Controllers
 		public async Task<IActionResult> Index()
 		{
 			List<VillaDto> list = new();
-            var token = HttpContext.Session.GetString(SD.SessionToken);
+            var token = await HttpContext.GetTokenAsync("access_token");
             var response = await _villaService.GetAllAsync<APIResponse>(token);
 			if (response != null && response.IsSuccess)
 			{
@@ -47,7 +48,7 @@ namespace MagicVilla_Web.Controllers
 			if (ModelState.IsValid)
 			{
                 List<VillaDto> list = new();
-                var token = HttpContext.Session.GetString(SD.SessionToken);
+                var token = await HttpContext.GetTokenAsync("access_token");
                 var response = await _villaService.CreateAsync<APIResponse>(model,token);
 				if (response != null && response.IsSuccess)
 				{
@@ -64,7 +65,7 @@ namespace MagicVilla_Web.Controllers
 		{
 
             List<VillaDto> list = new();
-            var token = HttpContext.Session.GetString(SD.SessionToken);
+            var token = await HttpContext.GetTokenAsync("access_token");
             var response = await _villaService.GetAsync<APIResponse>(villaId,token);
 			if (response != null && response.IsSuccess)
 			{
@@ -82,7 +83,7 @@ namespace MagicVilla_Web.Controllers
 			if (ModelState.IsValid)
 			{
                 List<VillaDto> list = new();
-                var token = HttpContext.Session.GetString(SD.SessionToken);
+                var token = await HttpContext.GetTokenAsync("access_token");
                 var response = await _villaService.UpdateAsync<APIResponse>(model, token);
 				if (response != null && response.IsSuccess)
 				{
@@ -99,7 +100,7 @@ namespace MagicVilla_Web.Controllers
 		{
 
             List<VillaDto> list = new();
-            var token = HttpContext.Session.GetString(SD.SessionToken);
+            var token = await HttpContext.GetTokenAsync("access_token");
             var response = await _villaService.GetAsync<APIResponse>(villaId, token);
 			if (response != null && response.IsSuccess)
 			{
@@ -116,7 +117,7 @@ namespace MagicVilla_Web.Controllers
 		{
 
             List<VillaDto> list = new();
-            var token = HttpContext.Session.GetString(SD.SessionToken);
+            var token = await HttpContext.GetTokenAsync("access_token");
             var response = await _villaService.DeleteAsync<APIResponse>(model.Id,token);
 				if (response != null && response.IsSuccess)
 				{

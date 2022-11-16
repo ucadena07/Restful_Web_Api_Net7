@@ -3,6 +3,7 @@ using MagicVilla_Utility;
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dtos;
 using MagicVilla_Web.Services.IServices;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -22,7 +23,7 @@ namespace MagicVilla_Web.Controllers
 		public async Task<IActionResult> Index()
 		{
 			List<VillaDto> list = new();
-			var token = HttpContext.Session.GetString(SD.SessionToken);
+			var token = await HttpContext.GetTokenAsync("access_token");
 
             var response = await _villaService.GetAllAsync<APIResponse>(token);
 			if (response != null && response.IsSuccess)
