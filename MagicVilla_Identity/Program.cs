@@ -1,7 +1,9 @@
+using Duende.IdentityServer.Services;
 using MagicVilla_Identity;
 using MagicVilla_Identity.Data;
 using MagicVilla_Identity.DBInitializer;
 using MagicVilla_Identity.Models;
+using MagicVilla_Identity.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +27,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 //Add Razor Pages
 builder.Services.AddRazorPages();
 
+
+
 //Add Identity Server 
 builder.Services.AddIdentityServer(options =>
 {
@@ -38,7 +42,10 @@ builder.Services.AddIdentityServer(options =>
 .AddInMemoryIdentityResources(SD.IdentityResources)
 .AddInMemoryApiScopes(SD.ApiScopes)
 .AddInMemoryClients(SD.Clients).AddAspNetIdentity<ApplicationUser>()
-.AddDeveloperSigningCredential();
+.AddDeveloperSigningCredential().AddProfileService<ProfileService>();
+
+//must be after AddIdentityServer
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 var app = builder.Build();
 

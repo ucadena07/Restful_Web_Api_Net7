@@ -25,8 +25,9 @@ namespace MagicVilla_Web.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
             return RedirectToAction(nameof(Index), "Home");
             //LoginRequestDTO obj = new();
             //return View(obj);
