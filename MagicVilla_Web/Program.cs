@@ -1,6 +1,7 @@
 using MagicVilla_Web.Mapping;
 using MagicVilla_Web.Services;
 using MagicVilla_Web.Services.IServices;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,8 +34,8 @@ builder.Services.AddAuthentication(options => {
         options.Cookie.HttpOnly = true;
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
-        //options.LoginPath = "/Auth/Login";
-        //options.AccessDeniedPath = "/Auth/AccessDenied";
+        options.LoginPath = "/Auth/Login";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
     })
     .AddOpenIdConnect("oidc", options =>
     {
@@ -49,6 +50,8 @@ builder.Services.AddAuthentication(options => {
 
         options.Scope.Add("magic");
         options.SaveTokens = true;
+
+        options.ClaimActions.MapJsonKey("role", "role");
     });
 
 builder.Services.AddSession(options =>
