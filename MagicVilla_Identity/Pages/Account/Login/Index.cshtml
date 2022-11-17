@@ -16,7 +16,7 @@
             <div class="col-sm-6">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Local Account</h2>
+                        <h2>Login</h2>
                     </div>
 
                     <div class="card-body">
@@ -43,7 +43,9 @@
                                     </div>
                                 </div>
                             }
-                            
+                            <a asp-page="../Register/Index" asp-route-returnUrl="@Model.Input.ReturnUrl">
+                                Register
+                                </a><br/>
                             <button class="btn btn-primary" name="Input.Button" value="login">Login</button>
                             <button class="btn btn-secondary" name="Input.Button" value="cancel">Cancel</button>
                         </form>

@@ -71,7 +71,7 @@ app.UseIdentityServer();
 app.UseAuthorization();
 
 //Add mapping to razor pages
-app.MapRazorPages().RequireAuthorization();
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",

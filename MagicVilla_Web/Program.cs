@@ -3,6 +3,7 @@ using MagicVilla_Web.Services;
 using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,16 @@ builder.Services.AddAuthentication(options => {
         options.SaveTokens = true;
 
         options.ClaimActions.MapJsonKey("role", "role");
+
+        options.Events = new OpenIdConnectEvents()
+        {
+            OnRemoteFailure = context =>
+            {
+                context.Response.Redirect("/");
+                context.HandleResponse();
+                return Task.FromResult(0);
+            }
+        };
     });
 
 builder.Services.AddSession(options =>
